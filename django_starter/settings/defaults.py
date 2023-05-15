@@ -19,8 +19,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
-env = environ.Env()
-environ.Env.read_env((BASE_DIR / '.env').as_posix())  # reading .env file
+env = environ.Env(
+    DEBUG=(bool, True)
+)
+
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+ENV_TYPE = env.str('ENV_TYPE')
+SECRET_KEY = env.str('SECRET_KEY')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -38,13 +43,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # installed app
-    # 'rest_framework',
+    'rest_framework',
     # 'rest_framework.authtoken',
     # 'allauth',
     # 'allauth.account',
     # 'allauth.socialaccount',
     # 'allauth.socialaccount.providers.google',
-    # 'corsheaders',
+    'corsheaders',
     'debug_toolbar',
 
     # custom app
@@ -53,8 +58,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -192,9 +199,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ]
 
 # CORS CONFIGURATIONS
-# CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',
-#     'https://toptuber.vercel.app',
-#     'https://www.youtube.com',
-# ]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+]
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.0/howto/static-files/
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static_local"),
+]
+
+INTERNAL_IPS = ['127.0.0.1']
+ALLOWED_HOSTS = ['*']
+

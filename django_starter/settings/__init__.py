@@ -2,10 +2,7 @@ from pathlib import Path
 
 import environ
 import os
-
-env = environ.Env(
-    DEBUG=(bool, True)
-)
+from .defaults import env
 
 if env.str('ENV_TYPE') == 'STAGING':
     from .staging import *
